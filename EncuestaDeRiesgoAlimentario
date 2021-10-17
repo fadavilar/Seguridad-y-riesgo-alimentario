@@ -1,0 +1,55 @@
+#Importamos los datos de la encuesta sl subset de datos 'alimentos'
+alimentos=df[['Id'
+,'Alguien no pudo comer una comida',
+              'Alguien comió menos de lo deseado',
+              'Alguien comió menos en la comida principal',
+              'Alguien se quejó por hambre y falta de alimentos',
+              'Alguien se acostó con hambre',
+              'Compraron menos alimentos para jóvenes y niños']]
+
+#Recodificamos categorias likert a valores, notese que los valores son unidireccionales en la escala, siendo para todos los ítems 'Siempre'=5 y 'Nunca'=1
+alimentos['Item_1'] = alimentos['Alguien no pudo comer una comida'].replace({'Siempre': '5',
+                                                     'Casi siempre': '4',
+                                                     'Algunas veces': '3',
+                                                     'Pocas veces':'2',
+                                                     'Nunca':'1'}).astype(float)
+alimentos['Item_2'] = alimentos['Alguien comió menos de lo deseado'].replace({'Siempre': '5',
+                                                     'Casi siempre': '4',
+                                                     'Algunas veces': '3',
+                                                     'Pocas veces':'2',
+                                                     'Nunca':'1'}).astype(float)
+alimentos['Item_3'] = alimentos['Alguien comió menos en la comida principal'].replace({'Siempre': '5',
+                                                     'Casi siempre': '4',
+                                                     'Algunas veces': '3',
+                                                     'Pocas veces':'2',
+                                                     'Nunca':'1'}).astype(float)                                                                                                    
+alimentos['Item_4'] = alimentos['Alguien se quejó por hambre y falta de alimentos'].replace({'Siempre': '5',
+                                                     'Casi siempre': '4',
+                                                     'Algunas veces': '3',
+                                                     'Pocas veces':'2',
+                                                     'Nunca':'1'}).astype(float)
+alimentos['Item_5'] = alimentos['Alguien se acostó con hambre'].replace({'Siempre': '5',
+                                                     'Casi siempre': '4',
+                                                     'Algunas veces': '3',
+                                                     'Pocas veces':'2',
+                                                     'Nunca':'1'}).astype(float)
+alimentos['Item_6'] = alimentos['Compraron menos alimentos para jóvenes y niños'].replace({'Siempre': '5',
+                                                     'Casi siempre': '4',
+                                                     'Algunas veces': '3',
+                                                     'Pocas veces':'2',
+                                                     'Nunca':'1'}).astype(float)
+
+#Totalizamos los valores por ítem como la suma de los ítems                                                    
+alimentos['Total']  =  alimentos['Item_1']+alimentos['Item_2']+alimentos['Item_3']+alimentos['Item_4']+alimentos['Item_5']+alimentos['Item_6']
+
+#Definimos las categorías de riesgo respecto de los valores definidos en el marco de referencia (ver: https://www.icbf.gov.co/sites/default/files/libro_2005.pdf)
+bins = [0,1,7,18,24]
+category = ['Seguridad alimentaria',
+            'Inseguridad alimentaria leve',
+            'Inseguridad alimentaria moderada',
+            'Inseguridad alimentaria severa']
+
+alimentos['Riesgo alimentario del hogar'] = pd.cut(alimentos['Total'], bins, labels=category)
+alimentos['Riesgo alimentario del hogar'].fillna('Seguridad alimentaria', inplace=True)
+
+alimentos.head()
